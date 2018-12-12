@@ -7,6 +7,8 @@ import { input } from './input';
 // 5, 5
 // 8, 9`;
 
+const MAX_DISTANCE = 10000;
+
 const parsedInput = input.split('\n')
     .map((line, id) => {
       const [ignore, x, y] = line.match(/^(\d+), (\d+)$/).map(Number);
@@ -90,4 +92,36 @@ const result = Object.values(finiteIds.reduce((acc, id) => {
     })[0].count;
 
 console.log({result});
+
+
+// PART 2
+const isWithinDistance = (x, y) => {
+  return parsedInput.reduce((count, pi) => {
+    return count + getDistance({ x, y }, pi);
+  }, 0) < MAX_DISTANCE;
+};
+
+const matrix2 = [...Array(maxY + 1)].reduce((columns, ignore, x) => {
+  const newColumn = [...Array(maxX + 1)].reduce((row, ignore, y) => {
+    return row.concat(isWithinDistance(x, y));
+  }, []);
+
+  return columns.concat([newColumn]);
+}, []);
+
+// matrix2.forEach((row) => {
+//   console.log(row.join(' '));
+// });
+
+const part2Result = matrix2.reduce((acc, row) => {
+  return [
+    ...acc,
+    ...row
+  ]
+}, [])
+    .filter((a) => a)
+    .length;
+
+console.log({part2Result});
+
 
